@@ -47,6 +47,7 @@ public class ResponseDefinition {
     private final DelayDistribution delayDistribution;
     private final ChunkedDribbleDelay chunkedDribbleDelay;
     private final String proxyBaseUrl;
+    private final boolean appendOriginalUrlPath;
     private final Fault fault;
     private final List<String> transformers;
     private final Parameters transformerParameters;
@@ -68,13 +69,32 @@ public class ResponseDefinition {
                               @JsonProperty("delayDistribution") DelayDistribution delayDistribution,
                               @JsonProperty("chunkedDribbleDelay") ChunkedDribbleDelay chunkedDribbleDelay,
                               @JsonProperty("proxyBaseUrl") String proxyBaseUrl,
+                              @JsonProperty("appendOriginalUrlPath") boolean appendOriginalUrlPath,
                               @JsonProperty("fault") Fault fault,
                               @JsonProperty("transformers") List<String> transformers,
                               @JsonProperty("transformerParameters") Parameters transformerParameters,
                               @JsonProperty("fromConfiguredStub") Boolean wasConfigured) {
-        this(status, statusMessage, Body.fromOneOf(null, body, jsonBody, base64Body), bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, fault, transformers, transformerParameters, wasConfigured);
+        this(status, statusMessage, Body.fromOneOf(null, body, jsonBody, base64Body), bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, appendOriginalUrlPath, fault, transformers, transformerParameters, wasConfigured);
     }
 
+    public ResponseDefinition(int status,
+                              String statusMessage,
+                              String body,
+                              JsonNode jsonBody,
+                              String base64Body,
+                              String bodyFileName,
+                              HttpHeaders headers,
+                              HttpHeaders additionalProxyRequestHeaders,
+                              Integer fixedDelayMilliseconds,
+                              DelayDistribution delayDistribution,
+                              ChunkedDribbleDelay chunkedDribbleDelay,
+                              String proxyBaseUrl,
+                              Fault fault,
+                              List<String> transformers,
+                              Parameters transformerParameters,
+                              Boolean wasConfigured) {
+        this(status, statusMessage, Body.fromOneOf(null, body, jsonBody, base64Body), bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, true, fault, transformers, transformerParameters, wasConfigured);
+    }
     public ResponseDefinition(int status,
                               String statusMessage,
                               byte[] body,
@@ -91,7 +111,7 @@ public class ResponseDefinition {
                               List<String> transformers,
                               Parameters transformerParameters,
                               Boolean wasConfigured) {
-        this(status, statusMessage, Body.fromOneOf(body, null, jsonBody, base64Body), bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, fault, transformers, transformerParameters, wasConfigured);
+        this(status, statusMessage, Body.fromOneOf(body, null, jsonBody, base64Body), bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, true, fault, transformers, transformerParameters, wasConfigured);
     }
 
     private ResponseDefinition(int status,
@@ -108,6 +128,24 @@ public class ResponseDefinition {
                                List<String> transformers,
                                Parameters transformerParameters,
                                Boolean wasConfigured) {
+        this(status, statusMessage, body, bodyFileName, headers, additionalProxyRequestHeaders, fixedDelayMilliseconds, delayDistribution, chunkedDribbleDelay, proxyBaseUrl, true, fault, transformers, transformerParameters, wasConfigured);
+    }
+
+    private ResponseDefinition(int status,
+                               String statusMessage,
+                               Body body,
+                               String bodyFileName,
+                               HttpHeaders headers,
+                               HttpHeaders additionalProxyRequestHeaders,
+                               Integer fixedDelayMilliseconds,
+                               DelayDistribution delayDistribution,
+                               ChunkedDribbleDelay chunkedDribbleDelay,
+                               String proxyBaseUrl,
+                               boolean appendOriginalUrlPath,
+                               Fault fault,
+                               List<String> transformers,
+                               Parameters transformerParameters,
+                               Boolean wasConfigured) {
         this.status = status > 0 ? status : 200;
         this.statusMessage = statusMessage;
 
@@ -120,6 +158,7 @@ public class ResponseDefinition {
         this.delayDistribution = delayDistribution;
         this.chunkedDribbleDelay = chunkedDribbleDelay;
         this.proxyBaseUrl = proxyBaseUrl;
+        this.appendOriginalUrlPath = appendOriginalUrlPath;
         this.fault = fault;
         this.transformers = transformers;
         this.transformerParameters = transformerParameters;
@@ -291,7 +330,10 @@ public class ResponseDefinition {
             return browserProxyUrl;
         }
 
-        return proxyBaseUrl + originalRequest.getUrl();
+        if(appendOriginalUrlPath)
+            return proxyBaseUrl + originalRequest.getUrl();
+        else
+            return proxyBaseUrl;
     }
 
     public String getProxyBaseUrl() {

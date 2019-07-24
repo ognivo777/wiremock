@@ -131,27 +131,6 @@ allprojects {
     }
 
     final DOCS_DIR = project(':').rootDir.getAbsolutePath() + '/docs-v2'
-
-    task npmInstall(type: Exec) {
-        workingDir DOCS_DIR
-        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-            commandLine 'cmd', '/c', 'npm', 'i'
-        } else {
-            commandLine 'npm', 'i'
-        }
-    }
-
-    task generateApiDocs(type: Exec) {
-        dependsOn npmInstall
-        workingDir DOCS_DIR
-        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-            commandLine 'cmd', '/c', 'npm', 'run', 'apidocs'
-        } else {
-            commandLine 'npm', 'run', 'apidocs'
-        }
-    }
-
-    processResources.dependsOn generateApiDocs
 }
 
 subprojects {
@@ -195,30 +174,9 @@ subprojects {
         baseName = 'wiremock-standalone'
         classifier = ''
 
-        relocate "org.mortbay", 'wiremock.org.mortbay'
-        relocate "org.eclipse", 'wiremock.org.eclipse'
-        relocate "org.codehaus", 'wiremock.org.codehaus'
-        relocate "com.google.common", 'wiremock.com.google.common'
-        relocate "com.google.thirdparty", 'wiremock.com.google.thirdparty'
-        relocate "com.fasterxml.jackson", 'wiremock.com.fasterxml.jackson'
-        relocate "org.apache", 'wiremock.org.apache'
-        relocate "org.xmlunit", 'wiremock.org.xmlunit'
-        relocate "org.hamcrest", 'wiremock.org.hamcrest'
-        relocate "org.skyscreamer", 'wiremock.org.skyscreamer'
-        relocate "org.json", 'wiremock.org.json'
-        relocate "net.minidev", 'wiremock.net.minidev'
-        relocate "com.jayway", 'wiremock.com.jayway'
-        relocate "org.objectweb", 'wiremock.org.objectweb'
-        relocate "org.custommonkey", "wiremock.org.custommonkey"
-        relocate "com.flipkart", "wiremock.com.flipkart"
-        relocate "net.sf", "wiremock.net.sf"
-        relocate "com.github.jknack", "wiremock.com.github.jknack"
-        relocate "org.antlr", "wiremock.org.antlr"
-
         dependencies {
             exclude(dependency('junit:junit'))
         }
-
         mergeServiceFiles()
     }
 
@@ -419,14 +377,6 @@ subprojects {
     task signAll {
         dependsOn signJars, signThinJar, signShadowJar, signThinJarPom, signStandaloneJarPom
     }
-
-    jar.dependsOn generateApiDocs
-
-    task deleteGeneratedApiDocs(type: Delete) {
-        delete "src/main/resources/swagger"
-    }
-
-    clean.dependsOn deleteGeneratedApiDocs
 
     task release {
         dependsOn 'generatePomFileForThinJarPublication', 'generatePomFileForStandaloneJarPublication'
