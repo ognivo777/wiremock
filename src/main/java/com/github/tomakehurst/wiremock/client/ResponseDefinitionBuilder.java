@@ -45,6 +45,7 @@ public class ResponseDefinitionBuilder {
     protected DelayDistribution delayDistribution;
     protected ChunkedDribbleDelay chunkedDribbleDelay;
     protected String proxyBaseUrl;
+    protected boolean appendOriginalUrlPath;
     protected Fault fault;
     protected List<String> responseTransformerNames;
     protected Map<String, Object> transformerParameters = newHashMap();
@@ -65,6 +66,7 @@ public class ResponseDefinitionBuilder {
         builder.delayDistribution = responseDefinition.getDelayDistribution();
         builder.chunkedDribbleDelay = responseDefinition.getChunkedDribbleDelay();
         builder.proxyBaseUrl = responseDefinition.getProxyBaseUrl();
+        builder.appendOriginalUrlPath = responseDefinition.isAppendOriginalUrlPath();
         builder.fault = responseDefinition.getFault();
         builder.responseTransformerNames = responseDefinition.getTransformers();
         builder.transformerParameters = responseDefinition.getTransformerParameters() != null ? Parameters.from(responseDefinition.getTransformerParameters()) : Parameters.empty();
@@ -202,6 +204,7 @@ public class ResponseDefinitionBuilder {
             this.delayDistribution = from.delayDistribution;
             this.chunkedDribbleDelay = from.chunkedDribbleDelay;
             this.proxyBaseUrl = from.proxyBaseUrl;
+            this.appendOriginalUrlPath = from.appendOriginalUrlPath;
             this.responseTransformerNames = from.responseTransformerNames;
             this.transformerParameters = from.transformerParameters;
         }
