@@ -253,6 +253,7 @@ public class ResponseDefinition {
             original.delayDistribution,
             original.chunkedDribbleDelay,
             original.proxyBaseUrl,
+            original.appendOriginalUrlPath,
             original.fault,
             original.transformers,
             original.transformerParameters,
@@ -338,6 +339,10 @@ public class ResponseDefinition {
 
     public String getProxyBaseUrl() {
         return proxyBaseUrl;
+    }
+
+    public boolean isAppendOriginalUrlPath() {
+        return appendOriginalUrlPath;
     }
 
     @JsonIgnore

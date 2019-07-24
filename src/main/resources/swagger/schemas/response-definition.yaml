@@ -43,6 +43,9 @@ allOf:
       proxyBaseUrl:
         type: string
         description: The base URL of the target to proxy matching requests to.
+      appendOriginalUrlPath:
+        type: boolean
+        description: Use 'false' to prevent append original path to proxy URL.
       transformerParameters:
         type: object
         description: Parameters to apply to response transformers.
