@@ -155,6 +155,11 @@ public class ResponseDefinitionBuilder {
         return new ProxyResponseDefinitionBuilder(this);
     }
 
+    public ProxyResponseDefinitionBuilder withAppendOriginalUrlPath(boolean appendOriginalUrlPath) {
+        this.appendOriginalUrlPath = appendOriginalUrlPath;
+        return new ProxyResponseDefinitionBuilder(this);
+    }
+
     public static ResponseDefinitionBuilder responseDefinition() {
         return new ResponseDefinitionBuilder();
     }
@@ -254,6 +259,7 @@ public class ResponseDefinitionBuilder {
                     delayDistribution,
                     chunkedDribbleDelay,
                     proxyBaseUrl,
+                    appendOriginalUrlPath,
                     fault,
                     responseTransformerNames,
                     transformerParameters,
@@ -273,6 +279,7 @@ public class ResponseDefinitionBuilder {
                     delayDistribution,
                     chunkedDribbleDelay,
                     proxyBaseUrl,
+                    appendOriginalUrlPath,
                     fault,
                     responseTransformerNames,
                     transformerParameters,
@@ -291,6 +298,7 @@ public class ResponseDefinitionBuilder {
                     delayDistribution,
                     chunkedDribbleDelay,
                     proxyBaseUrl,
+                    appendOriginalUrlPath,
                     fault,
                     responseTransformerNames,
                     transformerParameters,
